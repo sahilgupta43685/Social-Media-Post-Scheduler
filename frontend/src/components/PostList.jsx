@@ -16,9 +16,19 @@ function PostList({ posts, onEdit, onDelete, onRetry }) {
               <p><strong>Content:</strong> {post.content}</p>
               <p><strong>Platform:</strong> {post.platform}</p>
               <p><strong>Scheduled:</strong> {formatDate(post.scheduledTime)}</p>
-              <p><strong>Status:</strong> {post.status}</p>
+              <p>
+                <strong>Status:</strong>
+                {" "}
+                <span className={`status-pill status-${post.status}`}>{post.status}</span>
+              </p>
               <p><strong>Attempts:</strong> {post.publishAttempts || 0}</p>
-              {post.providerMeta?.mode && <p><strong>Mode:</strong> {post.providerMeta.mode}</p>}
+              {post.providerMeta?.mode && (
+                <p>
+                  <strong>Mode:</strong>
+                  {" "}
+                  <span className="mode-chip">{post.providerMeta.mode}</span>
+                </p>
+              )}
               {post.providerMeta?.externalPostId && (
                 <p><strong>External ID:</strong> {post.providerMeta.externalPostId}</p>
               )}

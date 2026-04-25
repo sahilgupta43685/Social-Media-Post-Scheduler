@@ -19,10 +19,17 @@ import "./styles.css";
 const disconnected = { connected: false, needsReconnect: false };
 
 function ProviderCard({ title, status, onConnect, onDisconnect, accountLabel = "Account" }) {
+  const providerClass = `provider-card provider-${title.toLowerCase()}`;
   return (
-    <div className="card">
+    <div className={`card ${providerClass}`}>
       <h2>{title} Connection</h2>
-      <p>Status: {status.connected ? "Connected" : "Not connected"}</p>
+      <p>
+        Status:
+        {" "}
+        <span className={`status-pill ${status.connected ? "status-connected" : "status-disconnected"}`}>
+          {status.connected ? "Connected" : "Not connected"}
+        </span>
+      </p>
       {status.connected && status.needsReconnect && (
         <p className="error">{title} needs reconnect. Publishing may fail until reconnected.</p>
       )}
@@ -204,7 +211,7 @@ function App() {
   if (!token || !user) {
     return (
       <div className="container">
-        <h1>Social Media Post Scheduler</h1>
+        <h1 className="page-title">Social Media Post Scheduler</h1>
         <AuthForm onAuthSuccess={setUser} />
       </div>
     );
@@ -212,7 +219,8 @@ function App() {
 
   return (
     <div className="container">
-      <h1>Social Media Post Scheduler</h1>
+      <h1 className="page-title">Social Media Post Scheduler</h1>
+      <p className="page-subtitle">Plan once. Publish everywhere.</p>
 
       <div className="topbar">
         <span className="user-label">
@@ -224,48 +232,50 @@ function App() {
       </div>
 
       {error && <p className="error">{error}</p>}
-      {info && <p>{info}</p>}
+      {info && <p className="info">{info}</p>}
 
-      <ProviderCard
-        title="LinkedIn"
-        status={linkedInStatus}
-        onConnect={() => openAuth(getLinkedInAuthUrl)}
-        onDisconnect={async () => {
-          await disconnectLinkedIn();
-          await loadIntegrationStatus();
-        }}
-      />
+      <div className="provider-grid">
+        <ProviderCard
+          title="LinkedIn"
+          status={linkedInStatus}
+          onConnect={() => openAuth(getLinkedInAuthUrl)}
+          onDisconnect={async () => {
+            await disconnectLinkedIn();
+            await loadIntegrationStatus();
+          }}
+        />
 
-      <ProviderCard
-        title="X"
-        status={xStatus}
-        onConnect={() => openAuth(getXAuthUrl)}
-        onDisconnect={async () => {
-          await disconnectX();
-          await loadIntegrationStatus();
-        }}
-      />
+        <ProviderCard
+          title="X"
+          status={xStatus}
+          onConnect={() => openAuth(getXAuthUrl)}
+          onDisconnect={async () => {
+            await disconnectX();
+            await loadIntegrationStatus();
+          }}
+        />
 
-      <ProviderCard
-        title="Facebook"
-        status={facebookStatus}
-        onConnect={() => openAuth(() => getMetaAuthUrl("facebook"))}
-        onDisconnect={async () => {
-          await disconnectProvider("facebook");
-          await loadIntegrationStatus();
-        }}
-        accountLabel="Page"
-      />
+        <ProviderCard
+          title="Facebook"
+          status={facebookStatus}
+          onConnect={() => openAuth(() => getMetaAuthUrl("facebook"))}
+          onDisconnect={async () => {
+            await disconnectProvider("facebook");
+            await loadIntegrationStatus();
+          }}
+          accountLabel="Page"
+        />
 
-      <ProviderCard
-        title="Instagram"
-        status={instagramStatus}
-        onConnect={() => openAuth(() => getMetaAuthUrl("instagram"))}
-        onDisconnect={async () => {
-          await disconnectProvider("instagram");
-          await loadIntegrationStatus();
-        }}
-      />
+        <ProviderCard
+          title="Instagram"
+          status={instagramStatus}
+          onConnect={() => openAuth(() => getMetaAuthUrl("instagram"))}
+          onDisconnect={async () => {
+            await disconnectProvider("instagram");
+            await loadIntegrationStatus();
+          }}
+        />
+      </div>
 
       <div className="card">
         <h2>Filter Posts</h2>
