@@ -1,13 +1,20 @@
 require("dotenv").config();
 
+const { validateCommonEnv } = require("./config/validateEnv");
 const mongoose = require("mongoose");
 const connectDB = require("./config/db");
 const redisConnection = require("./config/redis");
 const postWorker = require("./workers/postWorker");
 
 const startWorker = async () => {
-  await connectDB();
-  console.log("Worker started and listening for scheduled jobs...");
+  try {
+    validateCommonEnv();
+    await connectDB();
+    console.log("Worker started and listening for scheduled jobs...");
+  } catch (error) {
+    console.error("Worker boot failed:", error.message);
+    process.exit(1);
+  }
 };
 
 startWorker();
